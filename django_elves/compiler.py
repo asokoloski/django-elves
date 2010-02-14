@@ -9,16 +9,25 @@ from django_elves.layout import *
 __all__ = ('TOP', 'LEFT', 'RIGHT', 'BOTTOM', 'HORIZONTAL', 'VERTICAL',
            'Sprite', 'Image', 'OpenImage', 'RepeatedImage')
 
+class SpriteValidationError(StandardError):
+    pass
+
 class SpriteManager(object):
     def __init__(self):
         self.lookup_dict = None
         self.sprites = set()
+
+    def force_import(self):
+        # force the user's sprite definitions to be loaded
+        __import__(app_settings.SPRITE_DEFS, level=0)
 
     def add_sprite(self, sprite):
         self.lookup_dict = None
         self.sprites.add(sprite)
 
     def compiled(self, original_path):
+        self.force_import()
+
         if self.lookup_dict is None:
             lookup_dict = {}
             for s in self.sprites:
@@ -28,9 +37,6 @@ class SpriteManager(object):
         return self.lookup_dict[original_path]
             
 sprite_manager = SpriteManager()
-
-class SpriteValidationError(StandardError):
-    pass
 
 class SpritedImage(object):
     _image = None

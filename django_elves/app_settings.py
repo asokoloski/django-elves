@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 ORIGINAL_PATH = getattr(settings, 'ELVES_ORIGINAL_PATH', settings.MEDIA_ROOT)
-OUTPUT_PATH = getattr(settings, 'ELVES_OUTPUT_PATH', joinpath(settings.MEDIA_ROOT, 'sprites'))
-OUTPUT_URL = getattr(settings, 'ELVES_OUTPUT_URL', urljoin(settings.MEDIA_URL, 'sprites/'))
+OUTPUT_PATH = getattr(settings, 'ELVES_OUTPUT_PATH', joinpath(settings.MEDIA_ROOT, 'autosprites'))
+OUTPUT_URL = getattr(settings, 'ELVES_OUTPUT_URL', urljoin(settings.MEDIA_URL, 'autosprites/'))
 SPRITE_DEFS = getattr(settings, 'ELVES_SPRITE_DEFS', 'sprites')
 
 COMPILED_PATH = getattr(settings, 'ELVES_COMPILED_PATH', None)

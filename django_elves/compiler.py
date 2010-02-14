@@ -24,7 +24,6 @@ class SpriteManager(object):
             for s in self.sprites:
                 lookup_dict.update(s.compiled)
             self.lookup_dict = lookup_dict
-        print self.lookup_dict, self.sprites
 
         return self.lookup_dict[original_path]
             

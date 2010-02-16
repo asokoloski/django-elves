@@ -129,18 +129,17 @@ class Sprite(object):
         elif cls.direction == VERTICAL:
             return thickness, length
 
-    @classmethod
-    def make_image(cls):
-        max_thickness = max(im.full_thickness for im in cls.sprited_images)
-        length = sum(im.full_length for im in cls.sprited_images)
+    def make_image(self):
+        max_thickness = max(im.full_thickness for im in self.sprited_images)
+        length = sum(im.full_length for im in self.sprited_images)
 
-        spr = PImage.new('RGBA', cls.to_coord(max_thickness, length), (0, 0, 0, 0))
+        spr = PImage.new('RGBA', self.to_coord(max_thickness, length), (0, 0, 0, 0))
         compiled = {}
 
         along = 0
-        for im in cls.sprited_images:
+        for im in self.sprited_images:
             def add_compiled(where, repeat=None, align=None):
-                compiled[im.image_def.filename] = CompiledImage(cls.name(),
+                compiled[im.image_def.filename] = CompiledImage(self.name(),
                                                                 where,
                                                                 im.image.size,
                                                                 im.padding,
@@ -150,25 +149,25 @@ class Sprite(object):
             if im.def_type == RepeatedImage:
                 across = 0
                 def get_where():
-                    return cls.to_coord(across, along + im.start_padding)
-                add_compiled(get_where(), repeat='repeat-x' if cls.direction == VERTICAL else 'repeat-y')
+                    return self.to_coord(across, along + im.start_padding)
+                add_compiled(get_where(), repeat='repeat-x' if self.direction == VERTICAL else 'repeat-y')
 
                 while across < max_thickness:
                     spr.paste(im.image, get_where())
                     across += im.thickness
 
             elif im.def_type == OpenImage:
-                basic_direction = BOTTOM if cls.direction == HORIZONTAL else RIGHT
+                basic_direction = BOTTOM if self.direction == HORIZONTAL else RIGHT
                 if im.image_def.open_side == basic_direction:
-                    where = cls.to_coord(0, along)
+                    where = self.to_coord(0, along)
                     where_padded = where[0] + im.padding.left, where[1] + im.padding.top
                 else:
-                    where = cls.to_coord(max_thickness - im.thickness, along)
+                    where = self.to_coord(max_thickness - im.thickness, along)
                     where_padded = where[0] + im.padding.left, where[1] - im.padding.bottom
                 spr.paste(im.image, where_padded)
                 add_compiled(where_padded, align=direction_name(opposite_side(im.image_def.open_side)))
             else:
-                where = cls.to_coord(0, along)
+                where = self.to_coord(0, along)
                 where_padded = where[0] + im.padding.left, where[1] + im.padding.top
                 spr.paste(im.image, where_padded)
                 add_compiled(where_padded)

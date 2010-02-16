@@ -1,4 +1,5 @@
 from operator import xor
+import errno
 import os
 from pprint import pformat
 
@@ -36,6 +37,15 @@ class SpriteManager(object):
             self.lookup_dict = lookup_dict
 
         return self.lookup_dict[original_path]
+
+    def purge_compiled_files(self):
+        self.force_import()
+        for sprite in self.sprites:
+            try:
+                os.remove(sprite.compiled_filename())
+            except OSError, e:
+                if e.errno == errno.ENOENT:
+                    pass
             
 sprite_manager = SpriteManager()
 
@@ -192,27 +202,28 @@ class Sprite(object):
         images_hash = reduce(xor, (hash(i) for i in self.images))
         return images_hash ^ hash(self.direction) ^ hash(self.padding)
 
+    def compiled_filename(self):
+        return os.path.join(app_settings.COMPILED_PATH, self.name() + '.py')
+
     @property
     def compiled(self):
         if not getattr(self, '_compiled', None):
-            compiled_filename = os.path.join(app_settings.COMPILED_PATH, self.name() + '.py')
             def recompile_and_save():
                 self._compiled = self.compile()
-                f = open(compiled_filename, 'wb')
+                f = open(self.compiled_filename(), 'wb')
                 f.write('from django_elves.compiler import CompiledImage, CompiledSprite\n\n')
                 f.write('SPRITE = \\\n%r\n' % self._compiled)
                 f.close()
 
             try:
                 locals_dict = {}
-                execfile(compiled_filename, locals_dict, locals_dict)
+                execfile(self.compiled_filename(), locals_dict, locals_dict)
                 self._compiled = locals_dict['SPRITE']
                 if self._compiled.hash != self.hash():
                     raise StaleCacheException()
             except StaleCacheException:
                 recompile_and_save()
             except (IOError, OSError), e:
-                import errno
                 if e.errno == errno.ENOENT:
                     recompile_and_save()
                 else:

@@ -1,3 +1,4 @@
+from operator import xor
 import os
 from pprint import pformat
 
@@ -106,7 +107,8 @@ class SpriteMeta(type):
         cls = super(SpriteMeta, mcls).__new__(mcls, name, bases, attrs)
         if cls.images:
             cls.sprited_images = [SpritedImage(cls, i) for i in cls.images]
-            sprite_manager.add_sprite(cls())
+            sprite = cls()
+            sprite_manager.add_sprite(sprite)
         return cls
 
 class Sprite(object):
@@ -134,7 +136,7 @@ class Sprite(object):
         length = sum(im.full_length for im in self.sprited_images)
 
         spr = PImage.new('RGBA', self.to_coord(max_thickness, length), (0, 0, 0, 0))
-        compiled = {}
+        compiled = CompiledSprite(self.hash())
 
         along = 0
         for im in self.sprited_images:
@@ -183,6 +185,10 @@ class Sprite(object):
         im.save(output_image_filename)
         return compiled
 
+    def hash(self):
+        images_hash = reduce(xor, (hash(i) for i in self.images))
+        return images_hash ^ hash(self.direction) ^ hash(self.padding)
+
     @property
     def compiled(self):
         if not getattr(self, '_compiled', None):
@@ -195,14 +201,22 @@ class Sprite(object):
                 if e.errno == errno.ENOENT:
                     self._compiled = self.compile()
                     f = open(compiled_filename, 'wb')
-                    f.write('from django_elves.compiler import CompiledImage\n\n')
-                    f.write('SPRITE = \\\n%s\n' % pformat(self._compiled))
+                    f.write('from django_elves.compiler import CompiledImage, CompiledSprite\n\n')
+                    f.write('SPRITE = \\\n%r\n' % self._compiled)
                     f.close()
                 else:
                     raise
             else:
                 self._compiled = locals_dict['SPRITE']
         return self._compiled
+
+class CompiledSprite(dict):
+    def __init__(self, hash, data=None):
+        super(CompiledSprite, self).__init__(data or {})
+        self.hash = hash
+
+    def __repr__(self):
+        return 'CompiledSprite(%r, %s)' % (self.hash, pformat(dict(self)))
 
 class CompiledImage(object):
     def __init__(self, sprite, position, size, padding, repeat=None, align=None):

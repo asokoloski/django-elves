@@ -111,6 +111,9 @@ class SpriteMeta(type):
             sprite_manager.add_sprite(sprite)
         return cls
 
+class StaleCacheException(Exception):
+    pass
+
 class Sprite(object):
     sprited_images = None
     __metaclass__ = SpriteMeta
@@ -193,21 +196,28 @@ class Sprite(object):
     def compiled(self):
         if not getattr(self, '_compiled', None):
             compiled_filename = os.path.join(app_settings.COMPILED_PATH, self.name() + '.py')
-            locals_dict = {}
+            def recompile_and_save():
+                self._compiled = self.compile()
+                f = open(compiled_filename, 'wb')
+                f.write('from django_elves.compiler import CompiledImage, CompiledSprite\n\n')
+                f.write('SPRITE = \\\n%r\n' % self._compiled)
+                f.close()
+
             try:
+                locals_dict = {}
                 execfile(compiled_filename, locals_dict, locals_dict)
+                self._compiled = locals_dict['SPRITE']
+                if self._compiled.hash != self.hash():
+                    raise StaleCacheException()
+            except StaleCacheException:
+                recompile_and_save()
             except (IOError, OSError), e:
                 import errno
                 if e.errno == errno.ENOENT:
-                    self._compiled = self.compile()
-                    f = open(compiled_filename, 'wb')
-                    f.write('from django_elves.compiler import CompiledImage, CompiledSprite\n\n')
-                    f.write('SPRITE = \\\n%r\n' % self._compiled)
-                    f.close()
+                    recompile_and_save()
                 else:
                     raise
-            else:
-                self._compiled = locals_dict['SPRITE']
+
         return self._compiled
 
 class CompiledSprite(dict):

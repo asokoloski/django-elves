@@ -7,6 +7,9 @@ from django_elves.compiler import sprite_manager
 
 register = T.Library()
 
+class SpriteNotFoundError(StandardError):
+    pass
+
 @register.tag()
 def sprite(parser, token):
     """
@@ -81,50 +84,81 @@ def sprite(parser, token):
     try:
         x, y = args[2:4]
     except (IndexError, ValueError):
-        x, y = 0, 0
+        x, y = '0', '0'
 
-    try:
-        y = int(y)
-        x = int(x)
-    except (TypeError, ValueError):
-        if x not in ('right', 'left'):
-            raise T.TemplateSyntaxError('%s tag needs integral x and y coordinates' % args[0])
+    return make_sprite_tag(T.Variable(args[1]), T.Variable(x), T.Variable(y))
 
-    args = args[0:2] + args[4:]
-    im_file = T.Variable(args[1])
-    assert im_file.literal, 'Sprite filenames must be literal strings.  They cannot be template variables.'
-    im_file = im_file.resolve({})
-    try:
-        chunk = sprite_manager.compiled(im_file)
-    except KeyError:
-        raise T.TemplateSyntaxError('Could not find sprited image named "%s".  ' % im_file)
+def make_sprite_tag(filename_var, x_var, y_var):
+    # if possible, evaluate sprite while compiling the template.
+    # otherwise defer evaluation
+    if filename_var.literal and x_var.literal and y_var.literal:
+        cls = CompiledSpriteTag
+    else:
+        cls = RuntimeSpriteTag
+    return cls(filename_var, x_var, y_var)
 
-    xpos, ypos = None, None
-    if chunk.align in ('top', 'bottom'):
-        ypos = chunk.align
-    elif chunk.align in ('left', 'right'):
-        xpos = chunk.align
-    elif x in ('left', 'right'):
-        xpos = x
-
-    if ypos is None:
-        ypos = str(y - chunk.pos[1]) + 'px'
-    if xpos is None:
-        xpos = str(x - chunk.pos[0]) + 'px'
-
-#    wrapper = 'background: url("%%s") %(repeat)s %(x)s %(y)s;' % tup
-#    return process_media_tag(parser, args, 'static', wrapper=wrapper)
-    return SpriteTag(chunk.sprite, chunk.repeat or 'no-repeat', xpos, ypos)
 
 class SpriteTag(T.Node):
-    def __init__(self, sprite_filename, repeat, x, y):
-        self.sprite_url = urljoin(app_settings.OUTPUT_URL, '%s.png' % sprite_filename)
-        self.repeat = repeat
-        self.pos = x, y
+    errtype = T.TemplateSyntaxError
+
+    def __init__(self, filename_var, x_var, y_var):
         super(SpriteTag, self).__init__()
+        self.filename_var = filename_var
+        self.x_var = x_var
+        self.y_var = y_var
+        self.setup()
+
+    def setup(self):
+        pass
+
+    def evaluate(self, context):
+        x = self.x_var.resolve(context)
+        y = self.y_var.resolve(context)
+        try:
+            y = int(y)
+            x = int(x)
+        except (TypeError, ValueError):
+            if x not in ('right', 'left'):
+                raise self.errtype('%s tag needs integral x and y coordinates, or right or left' % args[0])
+
+        im_file = self.filename_var.resolve(context)
+        try:
+            chunk = sprite_manager.compiled(im_file)
+        except KeyError:
+            raise SpriteNotFoundError('Could not find sprited image named "%s".  ' % im_file)
+
+        xpos, ypos = None, None
+        if chunk.align in ('top', 'bottom'):
+            ypos = chunk.align
+        elif chunk.align in ('left', 'right'):
+            xpos = chunk.align
+        elif x in ('left', 'right'):
+            xpos = x
+
+        if ypos is None:
+            ypos = str(y - chunk.pos[1]) + 'px'
+        if xpos is None:
+            xpos = str(x - chunk.pos[0]) + 'px'
+
+        return chunk.sprite, chunk.repeat or 'no-repeat', (xpos, ypos)
+
+class CompiledSpriteTag(SpriteTag):
+    def setup(self):
+        self.sprite_name, self.repeat, self.pos = self.evaluate({})
 
     def render(self, context):
-        return "background-image: url('%s'); background-repeat: %s; background-position: %s %s" % \
-            (self.sprite_url, self.repeat, self.pos[0], self.pos[1])
+        return RENDERER.render('%s.png' % self.sprite_name, self.repeat, self.pos)
 
-        
+class RuntimeSpriteTag(SpriteTag):
+    def render(self, context):
+        sprite_name, repeat, pos = self.evaluate(context)
+        return RENDERER.render('%s.png' % sprite_name, repeat, pos)
+
+class SpriteCSSRenderer(object):
+    def render(self, filename, repeat, pos):
+        sprite_url = urljoin(app_settings.OUTPUT_URL, filename)
+        return "background-image: url('%s'); background-repeat: %s; background-position: %s %s;" % \
+            (sprite_url, repeat, pos[0], pos[1])
+
+RENDERER = SpriteCSSRenderer()
+

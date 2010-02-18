@@ -27,16 +27,17 @@ class SpriteManager(object):
         self.lookup_dict = None
         self.sprites.add(sprite)
 
-    def compiled(self, original_path):
+    def table(self):
         self.force_import()
-
         if self.lookup_dict is None:
             lookup_dict = {}
             for s in self.sprites:
                 lookup_dict.update(s.compiled)
             self.lookup_dict = lookup_dict
+        return self.lookup_dict
 
-        return self.lookup_dict[original_path]
+    def compiled(self, original_path):
+        return self.table()[original_path]
 
     def purge_compiled_files(self):
         self.force_import()

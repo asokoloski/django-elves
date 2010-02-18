@@ -1,0 +1,70 @@
+
+Quick Start Guide
+*****************
+
+This guide is intended to get you up and running with a mininmum of
+configuration.  Once you get django_elves working, you may want to
+look at the full configuration options.
+
+1. Add the following setting to your ``settings.py``:
+
+      COMPILED_PATH = '/(ABSOLUTE_PATH)...'
+
+   Path to an empty directory.  Your sprite definitions will each be
+   compiled into a layout, and cached in a python file in this
+   directory. It is recommeded to set this to something like:
+
+      COMPILED_PATH = '/YOUR_DJANGO_PROJECT_DIR/sprites'
+
+2. Make sure that any css files you need to serve are rendered as
+   django templates.  A basic view has been provided, called
+   *serve_rendered*, to aid with development. You really only want to
+   render css files if possible, so the urlpatterns entry would look
+   like:
+
+      urlpatterns = patterns('',
+          ...
+          (r'^site_media/(?P<path>.*\.css)$', 'django_elves.views.simple.serve_rendered',
+           {'document_root': settings.MEDIA_ROOT}),
+       ...
+      )
+
+3. Create an empty file in the root of your project directory, called
+   ``sprites.py``.  This is where you will defined which images are
+   grouped together in sprites.
+
+4. Run the management command
+
+   **manage.py elves_check**
+
+   and fix any errors that it shows.  You will probably have to create
+   the directory ``autosprites`` within your settings.MEDIA_ROOT
+   directory.
+
+5. Define your sprites.  Here is an example sprite file:
+
+      from django_elves.compiler import *
+
+      class icons(Sprite):
+          direction = VERTICAL
+          # default padding -- (10, 0) would also work,
+          # as it has CSS-style defaults
+          padding = (10, 0, 10, 0)
+          # this means that within 10 pixels to the top and bottom of each sprite,
+          # there will be nothing but transparent pixels (or the edge of the image).
+
+          images = [
+              Image('icons/smiley1.png'),
+              Image('icons/smiley2.png'),
+              Image('icons/smiley3.png'),
+              Image('icons/frown.png', padding=(12, 0)), # different padding
+              ]
+
+      class box_sprite(Sprite):
+          direction = HORIZONTAL
+
+          images = [
+              OpenImage('box_top.png', open_side=BOTTOM),
+              RepeatedImage('box_mid.png'),
+              OpenImage('box_bottom.png', open_side=TOP),
+              ]

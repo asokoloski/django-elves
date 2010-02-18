@@ -15,6 +15,9 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) sou
 
 .PHONY: help clean html dirhtml pickle json htmlhelp qthelp latex changes linkcheck doctest
 
+all: html text
+	mv build/text/quickstart.txt ../README
+
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html      to make standalone HTML files"

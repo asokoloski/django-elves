@@ -8,8 +8,8 @@
             # default padding -- (10, 0) would also work,
             # as it has CSS-style defaults
             padding = (10, 0, 10, 0)
-            # this means that within 10 pixels to the top and bottom of each sprite,
-            # there will be nothing but transparent pixels (or the edge of the image).
+            # this means that within 10 pixels above and below each image,
+            # there will be nothing but transparent pixels (or the edge of the sprite image).
         
             images = [
                 Image('icons/smiley1.png'),

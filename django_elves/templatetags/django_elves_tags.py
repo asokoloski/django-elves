@@ -13,72 +13,28 @@ class SpriteNotFoundError(StandardError):
 @register.tag()
 def sprite(parser, token):
     """
-    CSS Sprites are a method for combining multiple images into one to
-    reduce latency when loading pages.  They use a composite image and
-    background position offsets to show only part of the image to the
-    user.
 
-    To create sprites automatically:
+    ``{% sprite "filename" xpos ypos %}``
 
-    Create a new python file, or edit one, in the directory
-    playfire/media/sprites/.  These files and their names are purely
-    organizational -- you can have more than one sprite in the file.::
+    :param filename: This is the name of the original image, relative to your MEDIA_ROOT
+        (or ELVES_ORIGINAL_PATH if you have defined it).
 
-        # playfire/media/sprites/sprites1.py
-        from g4mer.templatetags.sprites import *
+    :param xpos: Default 0. The x offset of the image inside the
+        element.  This should not be quoted.
 
-        class arrows(Sprite):
-            direction = VERTICAL
-            padding = 10, 0, 10, 0 # or 10, 0 -- defaults work just like css
+    :param ypos: Default 0. The y offset of the image inside the
+        element.  This should not be quoted.
 
-            images = [
-                Image('images/arrows/circle/blue/left.png', padding=(10, 5)),
-                Image('images/arrows/circle/blue/right.png'),
-                Image('images/arrows/circle/red/left.png', padding=(10, 2)),
-                Image('images/arrows/circle/red/right.png'),
-                ]
+    If you are planning to use a sprited image within an element that
+    is larger than the element itself, you should specify a padding
+    for the sprite in the sprite definition.  This will ensure that
+    other images don't "intrude" on your element's background.
 
-    In this example, arrows will become the name of the sprite
-    (arrows.png).  It includes four images, two of which have
-    individual padding specified.  The other two take their default
-    padding from the top-level Sprite padding, and if that did not
-    exist the padding would be (0, 0, 0, 0).
-
-    direction = VERTICAL means that the sprited images will be
-    arranged vertically.
-
-    To use the sprite, simply include the sprite templatetag with the
-    original image name, like so::
+    Examples::
 
         {% sprite "images/arrows/circle/blue/right.png" 0 3 %}
-
-    This will result in the following css.::
-
-        background: url("http://local-media/static/images/sprites/6e4e30a8/arrows.png?59a512") no-repeat 0px -37px;
-
-    Without the 3, it would have a y-offset of -40px; The offset
-    passed in the sprite tag is added to the offset necessary to
-    position the sprited image.  Offsets default to zero.
-
-    More complicated sprites are also possible.  If you want your
-    sprite to work with content that expands vertically, you can do
-    something like this::
-
-        from g4mer.templatetags.sprites import *
-
-        class dialogs(Sprite):
-            direction = HORIZONTAL
-
-            images = [
-                OpenImage('images/top.png', open_side=BOTTOM),
-                RepeatedImage('images/middle.png'),
-                OpenImage('images/bottom.png', open_side=TOP),
-                ]
-
-    In this case, you can use the sprite tag without offset arguments,
-    and they will be automatically deduced. The top image will be
-    aligned to the top of its element, the bottom image to the bottom,
-    and the middle image will have repeat: repeat-y enabled.
+        {% sprite "images/smiley.png" 10 10 %}
+        {% sprite "images/sweet_background.png" %}
     """
     args = token.split_contents()
     try:

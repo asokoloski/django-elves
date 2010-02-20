@@ -1,0 +1,42 @@
+.. code-block:: css
+
+        span.icon_hello {
+          {% sprite "icons/smiley1.png" 3 3 %}
+          /* should work the same as:
+        
+             background-image: url('{{ MEDIA_ROOT }}icons/smiley1.png');
+             background-repeat: no-repeat;
+             background-position: 3px 3px;
+        
+             but it actually uses the sprite image and calculates the correct offset.
+             If the x and y positions were not specified, they would default to 0.
+          */
+             
+        }
+        
+        div.box_top {
+          /* in this case, because the sprite definition uses
+             OpenImage, the background position will be
+             
+             background-position: 0px top;
+        
+             Because the open_side is BOTTOM.  Any y position specified would be ignored.
+          */
+          {% sprite "box_top.png" %}
+          width: 300px; height: 10px;
+        }
+        
+        div.box_mid {
+          /* in this case, because the sprite definition uses
+             RepeatedImage, the background position and repeat will be
+             
+             background-position: 0px 0px;
+             background-repeat: repeat-y;
+
+             Any y position specified would be ignored.
+
+             This will be able to expand to accomodate any height.
+          */
+          {% sprite "box_mid.png" %}
+          width: 300px;
+        }

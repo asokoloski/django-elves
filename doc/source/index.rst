@@ -13,6 +13,8 @@ Contents:
 
    about_css_sprites
    quickstart
+   configuration
+   sprite_definitions
    sprite_tag   
 
 Indices and tables

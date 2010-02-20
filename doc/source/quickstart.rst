@@ -13,7 +13,7 @@ look at the full configuration options.
    compiled into a layout, and cached in a python file in this directory.
    It is recommeded to set this to something like::
 
-       COMPILED_PATH = '/YOUR_DJANGO_PROJECT_DIR/sprites' 
+       COMPILED_PATH = '/YOUR_DJANGO_PROJECT_DIR/sprites'
 
 #. Make sure that any css files you need to serve are rendered as django
    templates.  A basic view has been provided, called *serve_rendered*, to
@@ -41,3 +41,7 @@ look at the full configuration options.
 #. Define your sprites.  Here is an example sprite file:
 
    .. include:: example_sprite_file.rst
+
+#. Use the sprite templatetag.
+
+   .. include:: example_css.rst

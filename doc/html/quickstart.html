@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick Start Guide &mdash; Django Elves v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Elves v0.1 documentation" href="index.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="About CSS Sprites" href="about_css_sprites.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="about_css_sprites.html" title="About CSS Sprites"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quick-start-guide">
+<h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<p>This guide is intended to get you up and running with a mininmum of
+configuration.  Once you get django_elves working, you may want to
+look at the full configuration options.</p>
+<ol class="arabic">
+<li><p class="first">Add the following setting to your <tt class="docutils literal"><span class="pre">settings.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">COMPILED_PATH</span> <span class="o">=</span> <span class="s">&#39;/(ABSOLUTE_PATH)...&#39;</span>
+</pre></div>
+</div>
+<p>Path to an empty directory.  Your sprite definitions will each be
+compiled into a layout, and cached in a python file in this directory.
+It is recommeded to set this to something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">COMPILED_PATH</span> <span class="o">=</span> <span class="s">&#39;/YOUR_DJANGO_PROJECT_DIR/sprites&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Make sure that any css files you need to serve are rendered as django
+templates.  A basic view has been provided, called <em>serve_rendered</em>, to
+aid with development. You really only want to render css files if
+possible, so the urlpatterns entry would look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="p">(</span><span class="s">r&#39;^site_media/(?P&lt;path&gt;.*\.css)$&#39;</span><span class="p">,</span> <span class="s">&#39;django_elves.views.simple.serve_rendered&#39;</span><span class="p">,</span>
+     <span class="p">{</span><span class="s">&#39;document_root&#39;</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span><span class="p">}),</span>
+ <span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create an empty file in the root of your project directory, called
+<tt class="docutils literal"><span class="pre">sprites.py</span></tt>.  This is where you will defined which images are
+grouped together in sprites.</p>
+</li>
+<li><p class="first">Run the management command</p>
+<p><strong>manage.py elves_check</strong></p>
+<p>and fix any errors that it shows.  You will probably have to create
+the directory <tt class="docutils literal"><span class="pre">autosprites</span></tt> within your settings.MEDIA_ROOT directory.</p>
+</li>
+<li><p class="first">Define your sprites.  Here is an example sprite file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django_elves.compiler</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">class</span> <span class="nc">icons</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">VERTICAL</span>
+    <span class="c"># default padding -- (10, 0) would also work,</span>
+    <span class="c"># as it has CSS-style defaults</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c"># this means that within 10 pixels above and below each image,</span>
+    <span class="c"># there will be nothing but transparent pixels (or the edge of the sprite image).</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Image</span><span class="p">(</span><span class="s">&#39;icons/smiley1.png&#39;</span><span class="p">),</span>
+        <span class="n">Image</span><span class="p">(</span><span class="s">&#39;icons/smiley2.png&#39;</span><span class="p">),</span>
+        <span class="n">Image</span><span class="p">(</span><span class="s">&#39;icons/smiley3.png&#39;</span><span class="p">),</span>
+        <span class="n">Image</span><span class="p">(</span><span class="s">&#39;icons/frown.png&#39;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="c"># different padding</span>
+        <span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">box_sprite</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">HORIZONTAL</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">OpenImage</span><span class="p">(</span><span class="s">&#39;box_top.png&#39;</span><span class="p">,</span> <span class="n">open_side</span><span class="o">=</span><span class="n">BOTTOM</span><span class="p">),</span>
+        <span class="n">RepeatedImage</span><span class="p">(</span><span class="s">&#39;box_mid.png&#39;</span><span class="p">),</span>
+        <span class="n">OpenImage</span><span class="p">(</span><span class="s">&#39;box_bottom.png&#39;</span><span class="p">,</span> <span class="n">open_side</span><span class="o">=</span><span class="n">TOP</span><span class="p">),</span>
+        <span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Use the sprite templatetag.</p>
+<div class="highlight-python"><pre>span.icon_hello {
+  {% sprite "icons/smiley1.png" 3 3 %}
+  /* should work the same as:
+
+     background-image: url('{{ MEDIA_ROOT }}icons/smiley1.png');
+     background-repeat: no-repeat;
+     background-position: 3px 3px;
+
+     but it actually uses the sprite image and calculates the correct offset.
+     If the x and y positions were not specified, they would default to 0.
+  */
+
+}
+
+div.box_top {
+  /* in this case, because the sprite definition uses
+     OpenImage, the background position will be
+
+     background-position: 0px top;
+
+     Because the open_side is BOTTOM.  Any y position specified would be ignored.
+  */
+  {% sprite "box_top.png" %}
+  width: 300px; height: 10px;
+}
+
+div.box_mid {
+  /* in this case, because the sprite definition uses
+     RepeatedImage, the background position and repeat will be
+
+     background-position: 0px 0px;
+     background-repeat: repeat-y;
+
+     Any y position specified would be ignored.
+
+     This will be able to expand to accomodate any height.
+  */
+  {% sprite "box_mid.png" %}
+  width: 300px;
+}
+</pre>
+</div>
+</li>
+</ol>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="about_css_sprites.html"
+                                  title="previous chapter">About CSS Sprites</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="configuration.html"
+                                  title="next chapter">Configuration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/quickstart.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="about_css_sprites.html" title="About CSS Sprites"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Aaron Sokoloski.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

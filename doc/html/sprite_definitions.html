@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sprite Definitions &mdash; Django Elves v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Elves v0.1 documentation" href="index.html" />
+    <link rel="next" title="Sprite template tag" href="sprite_tag.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="sprite_tag.html" title="Sprite template tag"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sprite-definitions">
+<h1>Sprite Definitions<a class="headerlink" href="#sprite-definitions" title="Permalink to this headline">¶</a></h1>
+<p>Sprite definitions go into a python file referenced by the
+ELVES_SPRITE_DEFS setting.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django_elves.compiler</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c"># compiler is import-* safe</span>
+
+<span class="k">class</span> <span class="nc">registration_icons</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">class</span> <span class="nc">overview_icons</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="django_elves.compiler.Sprite">
+<em class="property">class </em><tt class="descclassname">django_elves.compiler.</tt><tt class="descname">Sprite</tt><a class="headerlink" href="#django_elves.compiler.Sprite" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base class for a user-defined sprite.  Sprite has some magic
+defined for it, so all you need to do is define the subclass and
+django-elves will know about it.  Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">my_sprite_1</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="n">HORIZONTAL</span> <span class="ow">or</span> <span class="n">VERTICAL</span>
+    <span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="c"># optional default padding</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span>
+         <span class="n">Image</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+         <span class="o">...</span>
+         <span class="p">]</span>
+</pre></div>
+</div>
+<p><tt class="xref docutils literal"><span class="pre">direction</span></tt>: <tt class="docutils literal"><span class="pre">HORIZONTAL</span></tt> or <tt class="docutils literal"><span class="pre">VERTICAL</span></tt>. Specifies
+whether the images that make up the sprite should be arranged in a
+horizontal line or a vertical line.  Currently, django-elves does
+not have a sophisticated packing algorithm &#8211; it just puts all the
+images in a straight line.</p>
+<p>This does have the benefit of allowing sprites to contain images
+that can be repeated using css <tt class="docutils literal"><span class="pre">background-repeat</span></tt>.  Use
+<a title="django_elves.compiler.RepeatedImage" class="reference internal" href="#django_elves.compiler.RepeatedImage"><tt class="xref docutils literal"><span class="pre">django_elves.compiler.RepeatedImage</span></tt></a> to specify this kind
+of image.</p>
+<p><tt class="xref docutils literal"><span class="pre">padding</span></tt>: The default padding to use for images where
+padding is not specified.  Optional, defaults to (0, 0, 0, 0).</p>
+<p><tt class="xref docutils literal"><span class="pre">images</span></tt>: A list of <a title="django_elves.compiler.Image" class="reference internal" href="#django_elves.compiler.Image"><tt class="xref docutils literal"><span class="pre">django_elves.compiler.Image</span></tt></a>
+objects that defines which images should be compiled into this
+sprite.  Any Image (or subclass) instance is acceptable.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="django_elves.compiler.Image">
+<em class="property">class </em><tt class="descclassname">django_elves.compiler.</tt><tt class="descname">Image</tt><big>(</big><em>filename</em>, <em>padding=None</em><big>)</big><a class="headerlink" href="#django_elves.compiler.Image" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>filename</em> &#8211; The path, relative to <tt class="xref docutils literal"><span class="pre">settings.ELVES_ORIGINAL_PATH</span></tt>, of
+an image file.  This file can be of any type that PIL (the
+Python Imaging Library) supports, although I personally
+recommend PNG.  Output sprite files are always PNG for now.</li>
+<li><em>padding</em> &#8211; <p>A single integer, or a 1 to 4-tuple of integers, representing
+how much transparent space is required around the image in
+question.  Defaults to (0, 0, 0, 0)</p>
+<p>If a tuple, the elements represent:</p>
+<div class="highlight-python"><pre>(top, right [default=top], bottom [default=top], left [default=right])</pre>
+</div>
+<p>You may omit all but the first element.  This works just like CSS.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="django_elves.compiler.RepeatedImage">
+<em class="property">class </em><tt class="descclassname">django_elves.compiler.</tt><tt class="descname">RepeatedImage</tt><big>(</big><em>filename</em>, <em>padding=None</em><big>)</big><a class="headerlink" href="#django_elves.compiler.RepeatedImage" title="Permalink to this definition">¶</a></dt>
+<dd>RepeatedImage is used to define an image that must be usable with
+css&#8217;s <tt class="docutils literal"><span class="pre">background-repeat</span></tt> property, even within a sprited image.
+If other images in the sprite are thicker than a RepeatedImage, it
+will be repeated within the sprite to fill the available
+horizontal space (for VERTICAL sprites) or vertical space (for
+HORIZONTAL sprites).  Note &#8211; if the image contains a pattern, it
+may not sync up nicely.</dd></dl>
+
+<dl class="class">
+<dt id="django_elves.compiler.OpenImage">
+<em class="property">class </em><tt class="descclassname">django_elves.compiler.</tt><tt class="descname">OpenImage</tt><big>(</big><em>filename</em>, <em>open_side</em>, <em>padding=None</em><big>)</big><a class="headerlink" href="#django_elves.compiler.OpenImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mainly for backwards-compatibility with existing HTML and CSS that
+expects the image to be aligned to one side of the element,
+especially aligned to the right or bottom, because this is not
+possible to do with a pixel-position.</p>
+<p>Usually you won&#8217;t need OpenImage, because you can use a regular
+Image in a fixed-size element instead.</p>
+<p>Accepts the same arguments as Image, plus:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>open_side</em> &#8211; <tt class="docutils literal"><span class="pre">TOP</span></tt>, <tt class="docutils literal"><span class="pre">LEFT</span></tt>, <tt class="docutils literal"><span class="pre">RIGHT</span></tt>, or <tt class="docutils literal"><span class="pre">BOTTOM</span></tt>.
+The side of the image that is open to the element.  If the
+open_side is TOP, for example, the image will be bottom-aligned.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="configuration.html"
+                                  title="previous chapter">Configuration</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="sprite_tag.html"
+                                  title="next chapter">Sprite template tag</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/sprite_definitions.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="sprite_tag.html" title="Sprite template tag"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Aaron Sokoloski.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

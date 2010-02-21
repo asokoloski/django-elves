@@ -17,6 +17,8 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) sou
 
 all: html text
 	mv build/text/quickstart.txt ../README
+	mkdir -p html
+	cp -r build/html/*.html html/
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -33,6 +35,7 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
+	-rm -rf html/*
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sprite template tag &mdash; Django Elves v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Elves v0.1 documentation" href="index.html" />
+    <link rel="prev" title="Sprite Definitions" href="sprite_definitions.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="sprite_definitions.html" title="Sprite Definitions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sprite-template-tag">
+<h1>Sprite template tag<a class="headerlink" href="#sprite-template-tag" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="django_elves.templatetags.django_elves_tags.sprite">
+<em class="property">class </em><tt class="descclassname">django_elves.templatetags.django_elves_tags.</tt><tt class="descname">sprite</tt><a class="headerlink" href="#django_elves.templatetags.django_elves_tags.sprite" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">{%</span> <span class="pre">sprite</span> <span class="pre">&quot;filename&quot;</span> <span class="pre">xpos</span> <span class="pre">ypos</span> <span class="pre">%}</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>filename</em> &#8211; This is the name of the original image, relative to your MEDIA_ROOT
+(or ELVES_ORIGINAL_PATH if you have defined it).</li>
+<li><em>xpos</em> &#8211; Default 0. The x offset of the image inside the
+element.  This should not be quoted.</li>
+<li><em>ypos</em> &#8211; Default 0. The y offset of the image inside the
+element.  This should not be quoted.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If you are planning to use a sprited image within an element that
+is larger than the element itself, you should specify a padding
+for the sprite in the sprite definition.  This will ensure that
+other images don&#8217;t &#8220;intrude&#8221; on your element&#8217;s background.</p>
+<p>Examples:</p>
+<div class="highlight-python"><pre>{% sprite "images/arrows/circle/blue/right.png" 0 3 %}
+{% sprite "images/smiley.png" 10 10 %}
+{% sprite "images/sweet_background.png" %}</pre>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="sprite_definitions.html"
+                                  title="previous chapter">Sprite Definitions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/sprite_tag.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="sprite_definitions.html" title="Sprite Definitions"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Aaron Sokoloski.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

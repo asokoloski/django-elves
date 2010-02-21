@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; Django Elves v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Elves v0.1 documentation" href="index.html" />
+    <link rel="next" title="Sprite Definitions" href="sprite_definitions.html" />
+    <link rel="prev" title="Quick Start Guide" href="quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="sprite_definitions.html" title="Sprite Definitions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quick Start Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>These should go into your project&#8217;s django settings file.</p>
+<p>Mandatory settings:</p>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">ELVES_COMPILED_PATH</span></tt></dt>
+<dd>Django-elves needs to remember which image is in which part of a
+sprite.  To do so, it writes a file for each sprite it creates.
+This directory specifies where those files should go.  You must
+create the directory yourself.</dd>
+</dl>
+<p>Optional settings:</p>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">ELVES_ORIGINAL_PATH</span></tt></dt>
+<dd>This is where django-elves will look for images that you put in
+sprite definitions.  In other words, when you define an image in a
+sprite &#8211; <tt class="docutils literal"><span class="pre">Image(filename)</span></tt> &#8211; the filename is relative to this path.
+The default is your <tt class="xref docutils literal"><span class="pre">settings.MEDIA_ROOT</span></tt>.</dd>
+<dt><tt class="xref docutils literal"><span class="pre">ELVES_OUTPUT_PATH</span></tt></dt>
+<dd>This is the directory where (whither?) the final sprite files shall
+be written.  The default is <tt class="docutils literal"><span class="pre">os.path.join(settings.MEDIA_ROOT,</span>
+<span class="pre">'autosprites')</span></tt>.</dd>
+</dl>
+<p><tt class="xref docutils literal"><span class="pre">ELVES_OUTPUT_URL</span></tt></p>
+<blockquote>
+This is a URL, relative to which django-elves expects the sprite
+files to be served.  It is basically the url version of
+<tt class="xref docutils literal"><span class="pre">OUTPUT_PATH</span></tt>.  The default is
+<tt class="docutils literal"><span class="pre">urlparse.urljoin(settings.MEDIA_ROOT,</span> <span class="pre">'autosprites'</span></tt>.</blockquote>
+<p><tt class="xref docutils literal"><span class="pre">ELVES_SPRITE_DEFS</span></tt>:</p>
+<blockquote>
+This is the python module where you will define your sprites.  The
+default is <tt class="docutils literal"><span class="pre">sprites</span></tt>.  The file itself can be anywhere, as long as
+python can reach it using that name.</blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="quickstart.html"
+                                  title="previous chapter">Quick Start Guide</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="sprite_definitions.html"
+                                  title="next chapter">Sprite Definitions</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/configuration.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="sprite_definitions.html" title="Sprite Definitions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quick Start Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Elves v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Aaron Sokoloski.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

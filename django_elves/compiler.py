@@ -47,7 +47,7 @@ class SpriteManager(object):
             except OSError, e:
                 if e.errno == errno.ENOENT:
                     pass
-            
+
 sprite_manager = SpriteManager()
 
 class SpritedImage(object):
@@ -234,7 +234,7 @@ class Sprite(object):
                                                                 im.padding,
                                                                 repeat=repeat,
                                                                 align=align)
-                
+
             if im.def_type == RepeatedImage:
                 across = 0
                 def get_where():

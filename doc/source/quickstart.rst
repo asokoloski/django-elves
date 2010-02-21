@@ -40,8 +40,8 @@ look at the full configuration options.
 
 #. Define your sprites.  Here is an example sprite file:
 
-   .. include:: example_sprite_file.rst
+   .. literalinclude:: example_sprite.py
 
 #. Use the sprite templatetag.
 
-   .. include:: example_css.rst
+   .. literalinclude:: example_css.css

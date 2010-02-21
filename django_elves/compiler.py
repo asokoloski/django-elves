@@ -86,6 +86,23 @@ class SpritedImage(object):
     full_length    = property(lambda self: self.select_dir(self.full_width, self.full_height))
 
 class Image(object):
+    """
+    :param filename:
+      The path, relative to :data:`settings.ELVES_ORIGINAL_PATH`, of
+      an image file.  This file can be of any type that PIL (the
+      Python Imaging Library) supports, although I personally
+      recommend PNG.  Output sprite files are always PNG for now.
+
+    :param padding: A single integer, or a 1 to 4-tuple of integers, representing
+      how much transparent space is required around the image in
+      question.  Defaults to (0, 0, 0, 0)
+
+      If a tuple, the elements represent::
+
+          (top, right [default=top], bottom [default=top], left [default=right])
+
+      You may omit all but the first element.  This works just like CSS.
+    """
     def __init__(self, filename, padding=None):
         self.filename = filename
         if padding:
@@ -99,9 +116,33 @@ class Image(object):
         return hash(self.filename) ^ hash(self.padding)
 
 class RepeatedImage(Image):
+    """
+    RepeatedImage is used to define an image that must be usable with
+    css's ``background-repeat`` property, even within a sprited image.
+    If other images in the sprite are thicker than a RepeatedImage, it
+    will be repeated within the sprite to fill the available
+    horizontal space (for VERTICAL sprites) or vertical space (for
+    HORIZONTAL sprites).  Note -- if the image contains a pattern, it
+    may not sync up nicely.
+    """
     pass
 
 class OpenImage(Image):
+    """
+    Mainly for backwards-compatibility with existing HTML and CSS that
+    expects the image to be aligned to one side of the element,
+    especially aligned to the right or bottom, because this is not
+    possible to do with a pixel-position.
+
+    Usually you won't need OpenImage, because you can use a regular
+    Image in a fixed-size element instead.
+
+    Accepts the same arguments as Image, plus:
+
+    :param open_side: ``TOP``, ``LEFT``, ``RIGHT``, or ``BOTTOM``.
+      The side of the image that is open to the element.  If the
+      open_side is TOP, for example, the image will be bottom-aligned.
+    """
     def __init__(self, filename, open_side, padding=None):
         assert open_side in (TOP, RIGHT, BOTTOM, LEFT)
         self.open_side = open_side
@@ -126,6 +167,38 @@ class StaleCacheException(Exception):
     pass
 
 class Sprite(object):
+    """
+    The base class for a user-defined sprite.  Sprite has some magic
+    defined for it, so all you need to do is define the subclass and
+    django-elves will know about it.  Usage::
+
+        class my_sprite_1(Sprite):
+            direction = HORIZONTAL or VERTICAL
+            padding = (10, 20) # optional default padding
+
+            images = [
+                 Image(...),
+                 ...
+                 ]
+
+    :data:`direction`: ``HORIZONTAL`` or ``VERTICAL``. Specifies
+    whether the images that make up the sprite should be arranged in a
+    horizontal line or a vertical line.  Currently, django-elves does
+    not have a sophisticated packing algorithm -- it just puts all the
+    images in a straight line.
+
+    This does have the benefit of allowing sprites to contain images
+    that can be repeated using css ``background-repeat``.  Use
+    :class:`django_elves.compiler.RepeatedImage` to specify this kind
+    of image.
+
+    :data:`padding`: The default padding to use for images where
+    padding is not specified.  Optional, defaults to (0, 0, 0, 0).
+
+    :data:`images`: A list of :class:`django_elves.compiler.Image`
+    objects that defines which images should be compiled into this
+    sprite.  Any Image (or subclass) instance is acceptable.
+    """
     sprited_images = None
     __metaclass__ = SpriteMeta
 

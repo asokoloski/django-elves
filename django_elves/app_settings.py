@@ -25,7 +25,7 @@ def check():
     if not exists(ORIGINAL_PATH):
         raise ImproperlyConfigured('ELVES_ORIGINAL_PATH (%r) does not exist.  It defaults to settings.MEDIA_ROOT.' % ORIGINAL_PATH)
     if not exists(OUTPUT_PATH):
-        raise ImproperlyConfigured('ELVES_OUTPUT_PATH (%r) does not exist.  It defaults to settings.MEDIA_ROOT + "/sprites".' % OUTPUT_PATH)
+        raise ImproperlyConfigured('ELVES_OUTPUT_PATH (%r) does not exist.  It defaults to settings.MEDIA_ROOT + "/autosprites".' % OUTPUT_PATH)
 
     if normpath(COMPILED_PATH) != normpath(abspath(COMPILED_PATH)):
         raise ImproperlyConfigured('ELVES_COMPILED_PATH must be an absolute path.  %r is invalid.' % COMPILED_PATH)

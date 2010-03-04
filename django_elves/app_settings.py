@@ -11,6 +11,8 @@ SPRITE_DEFS = getattr(settings, 'ELVES_SPRITE_DEFS', 'sprites')
 
 COMPILED_PATH = getattr(settings, 'ELVES_COMPILED_PATH', None)
 
+CSS_RENDERER = getattr(settings, 'ELVES_CSS_RENDERER', 'django_elves.templatetags.django_elves_tags.SpriteCSSRenderer')
+
 # allow lazy evaluation
 for name in ['ORIGINAL_PATH', 'OUTPUT_PATH', 'OUTPUT_URL', 'SPRITE_DEFS', 'COMPILED_PATH']:
     val = globals()[name]
@@ -47,3 +49,8 @@ def check():
     ok('ELVES_SPRITE_DEFS = %s' % SPRITE_DEFS)
 
     ok('ELVES_OUTPUT_URL = %s' % OUTPUT_URL)
+
+    from django_elves.templatetags.django_elves_tags import get_renderer
+    get_renderer()
+    ok('ELVES_CSS_RENDERER = %s' % CSS_RENDERER)
+

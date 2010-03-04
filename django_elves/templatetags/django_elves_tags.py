@@ -103,18 +103,33 @@ class CompiledSpriteTag(SpriteTag):
         self.sprite_name, self.repeat, self.pos = self.evaluate({})
 
     def render(self, context):
-        return RENDERER.render('%s.png' % self.sprite_name, self.repeat, self.pos)
+        return get_renderer().render('%s.png' % self.sprite_name, self.repeat, self.pos, compiled=True)
 
 class RuntimeSpriteTag(SpriteTag):
     def render(self, context):
         sprite_name, repeat, pos = self.evaluate(context)
-        return RENDERER.render('%s.png' % sprite_name, repeat, pos)
+        return get_renderer().render('%s.png' % sprite_name, repeat, pos)
 
 class SpriteCSSRenderer(object):
-    def render(self, filename, repeat, pos):
+    def render(self, filename, repeat, pos, compiled=False):
         sprite_url = urljoin(app_settings.OUTPUT_URL, filename)
         return "background-image: url('%s'); background-repeat: %s; background-position: %s %s;" % \
             (sprite_url, repeat, pos[0], pos[1])
 
-RENDERER = SpriteCSSRenderer()
+
+RENDERER = None
+def get_renderer():
+    global RENDERER
+    if not RENDERER:
+        modname, _, classname = app_settings.CSS_RENDERER.rpartition('.')
+        module = __import__(modname, {}, {}, [''])
+        try:
+            rclass = getattr(module, classname)
+        except AttributeError:
+            raise AttributeError("Could not find renderer class '%s' in module '%s'. "
+                                 "Please check your ELVES_CSS_RENDERER setting." % (classname, modname))
+        RENDERER = rclass()
+
+    return RENDERER
+
 

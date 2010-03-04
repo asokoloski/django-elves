@@ -32,9 +32,3 @@ class Command(NoArgsCommand):
         if len(sprite_manager.sprites) == 0:
             print 'No sprites found.  This may be ok, if you have not defined any yet.'
 
-        
-
-            
-        
-
-            

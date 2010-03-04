@@ -7,13 +7,13 @@ look at the full configuration options.
 
 #. Add the following setting to your :file:`settings.py`::
 
-       COMPILED_PATH = '/(ABSOLUTE_PATH)...'
+       ELVES_COMPILED_PATH = '/(ABSOLUTE_PATH)...'
 
    Path to an empty directory.  Your sprite definitions will each be
    compiled into a layout, and cached in a python file in this directory.
    It is recommeded to set this to something like::
 
-       COMPILED_PATH = '/YOUR_DJANGO_PROJECT_DIR/sprites'
+       ELVES_COMPILED_PATH = '/YOUR_DJANGO_PROJECT_DIR/sprites'
 
 #. Make sure that any css files you need to serve are rendered as django
    templates.  A basic view has been provided, called *serve_rendered*, to

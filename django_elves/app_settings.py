@@ -11,6 +11,11 @@ SPRITE_DEFS = getattr(settings, 'ELVES_SPRITE_DEFS', 'sprites')
 
 COMPILED_PATH = getattr(settings, 'ELVES_COMPILED_PATH', None)
 
+# allow lazy evaluation
+for name in ['ORIGINAL_PATH', 'OUTPUT_PATH', 'OUTPUT_URL', 'SPRITE_DEFS', 'COMPILED_PATH']:
+    val = globals()[name]
+    if callable(val):
+        globals()[name] = val()
 
 def check():
     if not COMPILED_PATH:

@@ -15,7 +15,7 @@ COMPILED_PATH = getattr(settings, 'ELVES_COMPILED_PATH', None)
 for name in ['ORIGINAL_PATH', 'OUTPUT_PATH', 'OUTPUT_URL', 'SPRITE_DEFS', 'COMPILED_PATH']:
     val = globals()[name]
     if callable(val):
-        globals()[name] = val()
+        globals()[name] = val(settings)
 
 def check():
     def ok(msg):

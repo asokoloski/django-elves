@@ -32,3 +32,9 @@ class Command(NoArgsCommand):
         if len(sprite_manager.sprites) == 0:
             print 'No sprites found.  This may be ok, if you have not defined any yet.'
 
+        if int(options['verbosity']) > 1:
+            print " --- SPRITES --- "
+            for s in sorted(sprite_manager.sprites, key=lambda s: type(s).__name__):
+                print type(s).__name__
+                for im in s.images:
+                    print '  ', im.filename

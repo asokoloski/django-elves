@@ -28,8 +28,9 @@ def all_sprites(request):
     sprite_manager.force_import()
 
     images = []
-    for name, cs in sprite_manager.table().iteritems():
-        images.append((name, cs))
+    table = sprite_manager.table()
+    for name in sorted(table.keys()):
+        images.append((name, table[name]))
 
     con = {'images': images}
     return HttpResponse(TEMP.render(Context(con)))

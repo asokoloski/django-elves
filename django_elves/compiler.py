@@ -1,6 +1,7 @@
 from operator import xor
 import errno
 import os
+import sys
 from pprint import pformat
 
 from PIL import Image as PImage
@@ -20,8 +21,12 @@ class SpriteManager(object):
         self.sprites = set()
 
     def force_import(self):
+        before_import = set(sys.modules.keys())
         # force the user's sprite definitions to be loaded
         __import__(app_settings.SPRITE_DEFS, level=0)
+        after_import = set(sys.modules.keys())
+        # save, so we know which modules to reload
+        self.imported_sprite_modules = after_import - before_import
 
     def add_sprite(self, sprite):
         self.lookup_dict = None
@@ -47,6 +52,15 @@ class SpriteManager(object):
             except OSError, e:
                 if e.errno == errno.ENOENT:
                     pass
+
+        for name in self.imported_sprite_modules:
+            try:
+                del sys.modules[name]
+            except KeyError:
+                pass
+
+        self.lookup_dict = None
+        self.sprites = set()
 
 sprite_manager = SpriteManager()
 
